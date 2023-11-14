@@ -1,12 +1,10 @@
 package org.example;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.sql.DataSource;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -53,6 +51,24 @@ public class Smtp_client {
         System.out.println(message.toString());
         // Now set the actual message
         Transport.send(message);
+        /*
+        2nd task starting
+         */
+        // Create a multipart message for attachment
+        BodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setText(html_content);
+        Multipart multipart = new MimeMultipart();
+        // Set text message part
+        multipart.addBodyPart(bodyPart);
+        // Second part is attachment
+        bodyPart = new MimeBodyPart();
+        String filename = "abc.txt";
+        /*
+        DataSource source = new FileDataSource(filename);
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(filename);
+        multipart.addBodyPart(messageBodyPart);
+         */
     }
     //fields
     private String dst_addr;
