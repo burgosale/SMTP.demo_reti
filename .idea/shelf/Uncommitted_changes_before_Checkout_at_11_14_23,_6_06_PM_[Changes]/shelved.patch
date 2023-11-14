@@ -1,0 +1,139 @@
+Index: src/main/java/org/example/Smtp_client.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example;\n\nimport javax.activation.DataHandler;\nimport javax.activation.FileDataSource;\nimport javax.mail.*;\nimport javax.mail.internet.*;\nimport javax.sql.DataSource;\nimport java.io.*;\nimport java.net.InetAddress;\nimport java.net.UnknownHostException;\nimport java.util.Properties;\n\n@SuppressWarnings(\"all\")\npublic class Smtp_client {\n\n    public static void main(String[] args) throws IOException, MessagingException {\n        //client setup and debug pring\n        Smtp_client cli = new Smtp_client(args[0],InetAddress.getByName(args[1]),args[2],args[3]);\n        System.out.println(\"cli up : dst: \"+args[0] + \" src : provaemailSRC@gmail.com\\n\");\n        String msg_path = \"/home/burgos/IdeaProjects/SMTP.demo_reti/src/main/resources/msg.html\";\n        String html_content = readHTMLFromFile(msg_path);\n\n        try{\n            Process p = Runtime.getRuntime().exec(msg_path);\n        }catch(IOException e){\n            System.out.println();\n        }\n        //setting persistance proprietis\n        Properties properties = System.getProperties();\n        properties.setProperty(\"fake-SMTP\",args[0]);\n        //setting smtp session\n        Session sess = Session.getDefaultInstance(properties);\n        // Create a default MimeMessage object.\n        MimeMessage message = new MimeMessage(sess);\n        // Set From: header field of the header.\n        try {\n            message.setFrom(new InternetAddress(args[2]));\n        } catch (MessagingException e) {\n            throw new RuntimeException(e);\n        }\n        // Set To: header field of the header.\n        try {\n            message.addRecipient(Message.RecipientType.TO, new InternetAddress(args[0]));\n        } catch (MessagingException e) {\n            throw new RuntimeException(e);\n        }\n\n        // Set Subject: header field\n        message.setSubject(args[3]);\n        message.setContent(html_content,\"text/html\");\n        System.out.println(message.toString());\n        // Now set the actual message\n        Transport.send(message);\n        /*\n        2nd task starting\n         */\n        // Create a multipart message for attachment\n        BodyPart bodyPart = new MimeBodyPart();\n        bodyPart.setText(html_content);\n        Multipart multipart = new MimeMultipart();\n        // Set text message part\n        multipart.addBodyPart(bodyPart);\n        // Second part is attachment\n        bodyPart = new MimeBodyPart();\n        String filename = \"abc.txt\";\n        /*\n        DataSource source = new FileDataSource(filename);\n        messageBodyPart.setDataHandler(new DataHandler(source));\n        messageBodyPart.setFileName(filename);\n        multipart.addBodyPart(messageBodyPart);\n         */\n    }\n    //fields\n    private String dst_addr;\n    private InetAddress dst_ip;\n    private String src_addr;\n    private String subject;\n    private final int DEFAULT_PORT=25;\n\n    public Smtp_client(String dst_addr,InetAddress dst_ip,String src_addr,String subject){\n        this.dst_addr=dst_addr;\n        this.dst_ip=dst_ip;\n        this.src_addr = src_addr;\n        this.subject = subject;\n    }\n    //gettes\n    private String getSubject(){\n        return subject;\n    }\n\n    private static String readHTMLFromFile(String path)throws IOException{\n        StringBuilder contentBuilder= new StringBuilder();\n        BufferedReader br = new BufferedReader(new FileReader(path));\n        String line;\n        while((line = br.readLine())!=null){\n            contentBuilder.append(line).append(\"\\n\");\n        }\n        return contentBuilder.toString();\n    }\n    /*\n    private Message prepareMsg(Properties prop){\n        Message msg = new MimeMessage();\n    }\n\n     **/\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/Smtp_client.java b/src/main/java/org/example/Smtp_client.java
+--- a/src/main/java/org/example/Smtp_client.java	
++++ b/src/main/java/org/example/Smtp_client.java	
+@@ -20,11 +20,7 @@
+         String msg_path = "/home/burgos/IdeaProjects/SMTP.demo_reti/src/main/resources/msg.html";
+         String html_content = readHTMLFromFile(msg_path);
+ 
+-        try{
+-            Process p = Runtime.getRuntime().exec(msg_path);
+-        }catch(IOException e){
+-            System.out.println();
+-        }
++
+         //setting persistance proprietis
+         Properties properties = System.getProperties();
+         properties.setProperty("fake-SMTP",args[0]);
+@@ -97,10 +93,16 @@
+         }
+         return contentBuilder.toString();
+     }
+-    /*
+-    private Message prepareMsg(Properties prop){
+-        Message msg = new MimeMessage();
++
++    private static Message prepareMsg(Properties properties,){
++        Message msg = new MimeMessage(Session.getDefaultInstance(properties));
++        try {
++            msg.setFrom(new InternetAddress(args[2]));
++        } catch (MessagingException e) {
++            throw new RuntimeException(e);
++
++        return msg;
+     }
+ 
+-     **/
++
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"0c21bcac-072d-4d07-8a35-26fbb91c40c0\" name=\"Changes\" comment=\"\">\n      <change afterPath=\"$PROJECT_DIR$/.gitignore\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/codeStyles/Project.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/vcs.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/pom.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/src/main/java/org/example/App.java\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/src/test/java/org/example/AppTest.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Class\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectCodeStyleSettingsMigration\">\n    <option name=\"version\" value=\"2\" />\n  </component>\n  <component name=\"ProjectColorInfo\"><![CDATA[{\n  \"associatedIndex\": 1\n}]]></component>\n  <component name=\"ProjectId\" id=\"2YAjBuq71qN0sRDPB70Wx6rMowP\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"WebServerToolWindowFactoryState\": \"false\",\n    \"git-widget-placeholder\": \"master\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"project.structure.last.edited\": \"Modules\",\n    \"project.structure.proportion\": \"0.15\",\n    \"project.structure.side.proportion\": \"0.2\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/src/main/resources\" />\n    </key>\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"Smtp_client\" type=\"Application\" factoryName=\"Application\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"org.example.Smtp_client\" />\n      <module name=\"SMTP.demo_reti\" />\n      <option name=\"PROGRAM_PARAMETERS\" value=\"provaemailDEST@gmail.com localhost provaemailSRC@gmail.com objectEXAMPLE\" />\n      <extension name=\"coverage\">\n        <pattern>\n          <option name=\"PATTERN\" value=\"org.example.*\" />\n          <option name=\"ENABLED\" value=\"true\" />\n        </pattern>\n      </extension>\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"0c21bcac-072d-4d07-8a35-26fbb91c40c0\" name=\"Changes\" comment=\"\" />\n      <created>1699975150372</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1699975150372</updated>\n      <workItem from=\"1699975151483\" duration=\"4178000\" />\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"XDebuggerManager\">\n    <breakpoint-manager>\n      <breakpoints>\n        <line-breakpoint enabled=\"true\" type=\"java-line\">\n          <url>file://$PROJECT_DIR$/src/main/java/org/example/Smtp_client.java</url>\n          <line>53</line>\n          <option name=\"timeStamp\" value=\"4\" />\n        </line-breakpoint>\n      </breakpoints>\n    </breakpoint-manager>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -4,16 +4,8 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="0c21bcac-072d-4d07-8a35-26fbb91c40c0" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/AppTest.java" afterDir="false" />
++    <list default="true" id="0c21bcac-072d-4d07-8a35-26fbb91c40c0" name="Changes" comment="1st task">
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Smtp_client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Smtp_client.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -28,6 +20,11 @@
+     </option>
+   </component>
+   <component name="Git.Settings">
++    <option name="RECENT_BRANCH_BY_REPOSITORY">
++      <map>
++        <entry key="$PROJECT_DIR$" value="master" />
++      </map>
++    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+   <component name="ProblemsViewState">
+@@ -52,7 +49,7 @@
+     "RunOnceActivity.OpenProjectViewOnStart": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "WebServerToolWindowFactoryState": "false",
+-    "git-widget-placeholder": "master",
++    "git-widget-placeholder": "2nd-task",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+@@ -93,22 +90,32 @@
+       <option name="number" value="Default" />
+       <option name="presentableId" value="Default" />
+       <updated>1699975150372</updated>
+-      <workItem from="1699975151483" duration="4178000" />
++      <workItem from="1699975151483" duration="5919000" />
+     </task>
++    <task id="LOCAL-00001" summary="1st task">
++      <option name="closed" value="true" />
++      <created>1699979679977</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1699979679978</updated>
++    </task>
++    <task id="LOCAL-00002" summary="1st task">
++      <option name="closed" value="true" />
++      <created>1699980424809</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1699980424809</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
+-  <component name="XDebuggerManager">
+-    <breakpoint-manager>
+-      <breakpoints>
+-        <line-breakpoint enabled="true" type="java-line">
+-          <url>file://$PROJECT_DIR$/src/main/java/org/example/Smtp_client.java</url>
+-          <line>53</line>
+-          <option name="timeStamp" value="4" />
+-        </line-breakpoint>
+-      </breakpoints>
+-    </breakpoint-manager>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="1st task" />
++    <option name="LAST_COMMIT_MESSAGE" value="1st task" />
+   </component>
+ </project>
+\ No newline at end of file
